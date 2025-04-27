@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IPL Stats API</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+    .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+    h1 { color: #2c3e50; }
+    .section { margin-bottom: 30px; }
+    label { font-weight: bold; display: block; margin: 10px 0 5px; }
+    input { width: calc(100% - 12px); padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+    button { margin-top: 10px; padding: 8px 12px; border: none; background: #007bff; color: white; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .output { margin-top: 10px; padding: 10px; background: #ecf0f1; border-radius: 4px; white-space: pre-wrap; max-height: 200px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>IPL Stats API Service</h1>
+
+  <div class="section" id="team-section">
+    <h2>1. Team Record</h2>
+    <label for="team-name">Team Name:</label>
+    <input type="text" id="team-name" placeholder="e.g. Mumbai Indians">
+    <button onclick="callApi('team')">Get Team Record</button>
+    <div class="output" id="team-output"></div>
+  </div>
+
+  <div class="section" id="team-vs-section">
+    <h2>2. Team vs Team Record</h2>
+    <label for="team1-name">Team 1:</label>
+    <input type="text" id="team1-name" placeholder="e.g. Mumbai Indians">
+    <label for="team2-name">Team 2:</label>
+    <input type="text" id="team2-name" placeholder="e.g. Chennai Super Kings">
+    <button onclick="callApi('team_vs')">Get Team vs Team Record</button>
+    <div class="output" id="team-vs-output"></div>
+  </div>
+
+  <div class="section" id="batsman-section">
+    <h2>3. Batsman All Matches Record</h2>
+    <label for="batsman-name">Batsman Name:</label>
+    <input type="text" id="batsman-name" placeholder="e.g. Virat Kohli">
+    <button onclick="callApi('batsman')">Get Batsman Record</button>
+    <div class="output" id="batsman-output"></div>
+  </div>
+
+  <div class="section" id="batsman-vs-section">
+    <h2>4. Batsman vs Team Record</h2>
+    <label for="batsman-vs-name">Batsman Name:</label>
+    <input type="text" id="batsman-vs-name" placeholder="e.g. Virat Kohli">
+    <label for="batsman-vs-team">Opponent Team:</label>
+    <input type="text" id="batsman-vs-team" placeholder="e.g. Chennai Super Kings">
+    <button onclick="callApi('batsman_vs')">Get Batsman vs Team Record</button>
+    <div class="output" id="batsman-vs-output"></div>
+  </div>
+
+  <div class="section" id="bowler-section">
+    <h2>5. Bowler All Matches Record</h2>
+    <label for="bowler-name">Bowler Name:</label>
+    <input type="text" id="bowler-name" placeholder="e.g. Jasprit Bumrah">
+    <button onclick="callApi('bowler')">Get Bowler Record</button>
+    <div class="output" id="bowler-output"></div>
+  </div>
+
+  <div class="section" id="bowler-vs-section">
+    <h2>6. Bowler vs Team Record</h2>
+    <label for="bowler-vs-name">Bowler Name:</label>
+    <input type="text" id="bowler-vs-name" placeholder="e.g. Jasprit Bumrah">
+    <label for="bowler-vs-team">Opponent Team:</label>
+    <input type="text" id="bowler-vs-team" placeholder="e.g. Chennai Super Kings">
+    <button onclick="callApi('bowler_vs')">Get Bowler vs Team Record</button>
+    <div class="output" id="bowler-vs-output"></div>
+  </div>
+
+</div>
+
+<script>
+function callApi(type) {
+  let url = '/api/';
+  let outputDiv = '';
+  if (type === 'team') {
+    const team = document.getElementById('team-name').value;
+    url += `team/${encodeURIComponent(team)}`;
+    outputDiv = 'team-output';
+  } else if (type === 'team_vs') {
+    const team1 = document.getElementById('team1-name').value;
+    const team2 = document.getElementById('team2-name').value;
+    url += `team_vs/${encodeURIComponent(team1)}/${encodeURIComponent(team2)}`;
+    outputDiv = 'team-vs-output';
+  } else if (type === 'batsman') {
+    const batsman = document.getElementById('batsman-name').value;
+    url += `batsman/${encodeURIComponent(batsman)}`;
+    outputDiv = 'batsman-output';
+  } else if (type === 'batsman_vs') {
+    const batsman = document.getElementById('batsman-vs-name').value;
+    const team = document.getElementById('batsman-vs-team').value;
+    url += `batsman_vs/${encodeURIComponent(batsman)}/${encodeURIComponent(team)}`;
+    outputDiv = 'batsman-vs-output';
+  } else if (type === 'bowler') {
+    const bowler = document.getElementById('bowler-name').value;
+    url += `bowler/${encodeURIComponent(bowler)}`;
+    outputDiv = 'bowler-output';
+  } else if (type === 'bowler_vs') {
+    const bowler = document.getElementById('bowler-vs-name').value;
+    const team = document.getElementById('bowler-vs-team').value;
+    url += `bowler_vs/${encodeURIComponent(bowler)}/${encodeURIComponent(team)}`;
+    outputDiv = 'bowler-vs-output';
+  }
+
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById(outputDiv).innerText = JSON.stringify(data, null, 2);
+    })
+    .catch(error => {
+      document.getElementById(outputDiv).innerText = 'Error fetching data';
+    });
+}
+</script>
+</body>
+</html>
